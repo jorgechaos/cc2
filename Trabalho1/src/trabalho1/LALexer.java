@@ -94,7 +94,7 @@ public class LALexer extends Lexer {
 	}
 
 
-	   public static String grupo="<<611042>>";
+	   public static String grupo="611042, 407577, 587222, 407844";
 
 
 	public LALexer(CharStream input) {

@@ -126,7 +126,7 @@ public class LAParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-	   public static String grupo="<<611042>>";
+	   public static String grupo="611042, 407577, 587222, 407844";
 
 	public LAParser(TokenStream input) {
 		super(input);
