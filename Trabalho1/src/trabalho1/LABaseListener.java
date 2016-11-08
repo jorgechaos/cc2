@@ -731,18 +731,6 @@ public class LABaseListener implements LAListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParcela_logica(LAParser.Parcela_logicaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterTest(LAParser.TestContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTest(LAParser.TestContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

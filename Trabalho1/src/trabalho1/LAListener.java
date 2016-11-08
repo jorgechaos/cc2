@@ -607,14 +607,4 @@ public interface LAListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParcela_logica(LAParser.Parcela_logicaContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LAParser#test}.
-	 * @param ctx the parse tree
-	 */
-	void enterTest(LAParser.TestContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LAParser#test}.
-	 * @param ctx the parse tree
-	 */
-	void exitTest(LAParser.TestContext ctx);
 }
