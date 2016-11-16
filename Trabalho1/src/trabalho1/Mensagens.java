@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 public class Mensagens implements ANTLRErrorListener {
     
+    boolean encontrouerro = false;
+    
     public static Mensagens MENSAGENS = new Mensagens();
     
     
@@ -23,8 +25,12 @@ public class Mensagens implements ANTLRErrorListener {
         
         if (token != null){
             texto = token.getText(); 
-            if(texto.equals("<EOF>")) Saida.println("Linha "+ line +": erro sintatico proximo a EOF");
-            else Saida.println("Linha "+ line +": erro sintatico proximo a "+ texto);
+            if(texto.equals("<EOF>"))
+                Saida.println("Linha "+ line +": erro sintatico proximo a EOF");  
+            else if (encontrouerro == false){
+                Saida.println("Linha "+ line +": erro sintatico proximo a "+ texto);
+                encontrouerro = true; 
+            }
         }
         
     }
