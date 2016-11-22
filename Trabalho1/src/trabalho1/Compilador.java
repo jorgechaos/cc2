@@ -60,10 +60,10 @@ public class Compilador {
         LAParser parser = new LAParser(tokens);
         
         lexer.removeErrorListeners();
-        lexer.addErrorListener(Mensagens.MENSAGENS);
-        
         parser.removeErrorListeners();
-        parser.addErrorListener(Mensagens.MENSAGENS);
+        
+        parser.addErrorListener(MensagensErro.MENSAGENSERRO);
+        lexer.addErrorListener(MensagensErro.MENSAGENSERRO);
         
         parser.programa();
         Saida.println("Fim da compilacao");
