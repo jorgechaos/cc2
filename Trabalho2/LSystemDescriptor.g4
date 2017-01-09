@@ -2,7 +2,13 @@ grammar LSystemDescriptor;
 
 commentary : '//' .*? LINEBREAK {skip();};
 
+
+
 description : alphabet axiom rules;
+
+  //****************
+  //*** Alphabet ***
+  //****************
 
   alphabet : OP_ALPHABET (symbolWithCommand (OP_SEPARATOR symbolWithCommand)*)?;
 
@@ -27,7 +33,15 @@ description : alphabet axiom rules;
 
               factor : INTEGER | REAL | OP_OPEN_EXPRESSION arithmeticExpression OP_CLOSE_EXPRESSION;
 
+  //*****************
+  //***   Axiom   ***
+  //*****************
+
   axiom : OP_AXIOM ALPHABET_SYMBOL*;
+
+  //*****************
+  //***   Rules   ***
+  //*****************
 
   rules : OP_RULES (singleRule (OP_SEPARATOR singleRule)*)?;
 
@@ -45,7 +59,9 @@ description : alphabet axiom rules;
 
                 rulesFactor : factor | OP_VALUE;
 
-// LEXIC
+//*************
+//*** LEXIC ***
+//*************
 
 UPPER_CHARACTER : ('A'..'Z');
 
@@ -67,51 +83,56 @@ LINEBREAK : ('\r'('\n')? | '\n');
 
 BLANKSPACE : (' ' | '\t' |LINEBREAK) -> skip;
 
-	// OPERATORS
+//*****************
+//*** OPERATORS ***
+//*****************
 
-	OP_ALPHABET : 'alphabet:';
+OP_ALPHABET : 'alphabet:';
 
-	OP_AXIOM : 'axiom:';
+OP_AXIOM : 'axiom:';
 
-	OP_RULES : 'rules:';
+OP_RULES : 'rules:';
 
-	OP_SEPARATOR : ',';
+OP_SEPARATOR : ',';
 
-	OP_COMMAND : ':';
+OP_COMMAND : ':';
 
-	OP_RULE : '->';
+OP_RULE : '->';
 
-	OP_OPEN_EXPRESSION : '(';
+OP_OPEN_EXPRESSION : '(';
 
-	OP_CLOSE_EXPRESSION : ')';
+OP_CLOSE_EXPRESSION : ')';
 
-	OP_VALUE : 'a';
+OP_VALUE : 'a';
 
-	OP_SIGNAL : '-';
+OP_SIGNAL : '-';
 
-	OP_FLOAT_SEPARATOR : '.';
+OP_FLOAT_SEPARATOR : '.';
 
-	OP_SUM : '+' | '-';
+OP_SUM : '+' | '-';
 
-	OP_MULT : '*' | '/';
+OP_MULT : '*' | '/';
 
-	OP_PERCENTAGE : '%';
+OP_PERCENTAGE : '%';
 
-		// COMMAND OPERATORS
-		OP_FORWARD : 'MOVE' | 'FORWARD';
+//*********************
+//*** CMD OPERATORS ***
+//*********************
 
-		OP_FORWARD_NODRAW : 'move' | 'forward';
+OP_FORWARD : 'MOVE' | 'FORWARD';
 
-		OP_ROTATE_CCW : 'ROTATE' | 'LEFT';
+OP_FORWARD_NODRAW : 'move' | 'forward';
 
-		OP_ROTATE_CW : 'RIGHT';
+OP_ROTATE_CCW : 'ROTATE' | 'LEFT';
 
-		OP_SET_DIR : 'SETDIR' | 'POINT';
+OP_ROTATE_CW : 'RIGHT';
 
-		OP_RESET : 'RESET' | 'HOME';
+OP_SET_DIR : 'SETDIR' | 'POINT';
 
-		OP_PUSH : 'PUSH' | 'SAVE' | 'REMEMBER';
+OP_RESET : 'RESET' | 'HOME';
 
-		OP_POP : 'POP' | 'LOAD' | 'GOBACK' ;
+OP_PUSH : 'PUSH' | 'SAVE' | 'REMEMBER';
 
-		OP_FORGET : 'FORGET' | 'POPNOMOVE';
+OP_POP : 'POP' | 'LOAD' | 'GOBACK' ;
+
+OP_FORGET : 'FORGET' | 'POPNOMOVE';
