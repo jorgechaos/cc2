@@ -4,9 +4,9 @@ commentary : '//' .*? LINEBREAK {skip();};
 
 description : alphabet axiom rules;
 
-  alphabet : OP_ALPHABET (symbolCommand (OP_SEPARATOR symbolCommand)*)?;
+  alphabet : OP_ALPHABET (symbolWithCommand (OP_SEPARATOR symbolWithCommand)*)?;
 
-    symbolCommand : ALPHABET_SYMBOL (OP_COMMAND command)?;
+    symbolWithCommand : ALPHABET_SYMBOL (OP_COMMAND command)?;
 
       command	: OP_FORWARD parameter?			// Moves the turtle forward, drawing a line between last position and current position
       		| OP_FORWARD_NODRAW parameter?		// Moves the turtle forward without drawing
@@ -29,21 +29,21 @@ description : alphabet axiom rules;
 
   axiom : OP_AXIOM ALPHABET_SYMBOL*;
 
-  rules : OP_RULES singleRule (OP_SEPARATOR singleRule)*;
+  rules : OP_RULES (singleRule (OP_SEPARATOR singleRule)*)?;
 
-    singleRule : ALPHABET_SYMBOL PERCENTAGE? OP_RULE resultExpression | ;
+    singleRule : ALPHABET_SYMBOL PERCENTAGE? OP_RULE resultExpression;
 
       resultExpression : (parameterizedSymbol | OTHER_CHARACTER)*;
 
-        parameterizedSymbol : ALPHABET_SYMBOL symbolParameter?;
+        parameterizedSymbol : ALPHABET_SYMBOL symbolWithParameter?;
 
-          symbolParameter : OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION;
+          symbolWithParameter : OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION;
 
             rulesArithmeticExpression : rulesTerm (OP_SUM rulesTerm)*;
 
               rulesTerm : rulesFactor (OP_MULT rulesFactor)*;
 
-                rulesFactor : INTEGER | REAL | OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION | OP_VALUE;
+                rulesFactor : factor | OP_VALUE;
 
 // LEXIC
 
@@ -61,7 +61,7 @@ INTEGER : OP_SIGNAL? DIGIT+;
 
 REAL : INTEGER (OP_FLOAT_SEPARATOR DIGIT+)?;
 
-PERCENTAGE : '0'* OP_FLOAT_SEPARATOR ('1'..'9') DIGIT* | '0'* ('100' | DIGIT? DIGIT) OP_PERCENTAGE;
+PERCENTAGE : '0'* OP_FLOAT_SEPARATOR '0'* ('1'..'9') DIGIT* | '0'* ('100' | '0' ('1'..'9') | ('1'..'9') '0' | DIGIT? ('1'..'9')) OP_PERCENTAGE;
 
 LINEBREAK : ('\r'('\n')? | '\n');
 
