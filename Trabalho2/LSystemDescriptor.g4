@@ -1,9 +1,5 @@
 grammar LSystemDescriptor;
 
-commentary : '//' .*? LINEBREAK {skip();};
-
-
-
 description : alphabet axiom rules;
 
   //****************
@@ -31,7 +27,7 @@ description : alphabet axiom rules;
 
             term : factor (OP_MULT factor)*;
 
-              factor : INTEGER | REAL | OP_OPEN_EXPRESSION arithmeticExpression OP_CLOSE_EXPRESSION;
+              factor : DIGIT | INTEGER | REAL | OP_OPEN_EXPRESSION arithmeticExpression OP_CLOSE_EXPRESSION;
 
   //*****************
   //***   Axiom   ***
@@ -47,41 +43,37 @@ description : alphabet axiom rules;
 
     singleRule : ALPHABET_SYMBOL PERCENTAGE? OP_RULE resultExpression;
 
-      resultExpression : (parameterizedSymbol | OTHER_CHARACTER)*;
+      resultExpression : (ALPHABET_SYMBOL | ALPHABET_SYMBOL symbolParameter | OTHER_CHAR)*;
 
-        parameterizedSymbol : ALPHABET_SYMBOL symbolWithParameter?;
+        symbolParameter : OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION;
 
-          symbolWithParameter : OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION;
+          rulesArithmeticExpression : rulesTerm (OP_SUM rulesTerm)*;
 
-            rulesArithmeticExpression : rulesTerm (OP_SUM rulesTerm)*;
+            rulesTerm : rulesFactor (OP_MULT rulesFactor)*;
 
-              rulesTerm : rulesFactor (OP_MULT rulesFactor)*;
-
-                rulesFactor : factor | OP_VALUE;
+              rulesFactor : DIGIT | INTEGER | REAL | OP_OPEN_EXPRESSION rulesArithmeticExpression OP_CLOSE_EXPRESSION | OP_VALUE;
 
 //*************
 //*** LEXIC ***
 //*************
 
-UPPER_CHARACTER : ('A'..'Z');
+COMMENT : '//' ~[\r\n]* -> skip;
 
-SPECIAL_CHARACTER : ('+' | '-' | '[' | ']');
+WS : [ \t\r\n]+ -> skip;
+
+ALPHABET_SYMBOL : OP_SYMBOL UPPER_CHAR OP_SYMBOL | OP_SYMBOL DIGIT OP_SYMBOL | SPECIAL_CHAR;
+
+UPPER_CHAR : ('A'..'Z');
 
 DIGIT : ('0'..'9');
 
-ALPHABET_SYMBOL : UPPER_CHARACTER | SPECIAL_CHARACTER | DIGIT;
-
-OTHER_CHARACTER : ~('A'..'Z'|'0'..'9'|'+'|'-'|'['|']');
+SPECIAL_CHAR : (OP_SYMBOL '+' OP_SYMBOL | OP_SYMBOL '-' OP_SYMBOL | OP_SYMBOL '[' OP_SYMBOL | OP_SYMBOL ']' OP_SYMBOL);
 
 INTEGER : OP_SIGNAL? DIGIT+;
 
 REAL : INTEGER (OP_FLOAT_SEPARATOR DIGIT+)?;
 
 PERCENTAGE : '0'* OP_FLOAT_SEPARATOR '0'* ('1'..'9') DIGIT* | '0'* ('100' | '0' ('1'..'9') | ('1'..'9') '0' | DIGIT? ('1'..'9')) OP_PERCENTAGE;
-
-LINEBREAK : ('\r'('\n')? | '\n');
-
-BLANKSPACE : (' ' | '\t' |LINEBREAK) -> skip;
 
 //*****************
 //*** OPERATORS ***
@@ -103,7 +95,7 @@ OP_OPEN_EXPRESSION : '(';
 
 OP_CLOSE_EXPRESSION : ')';
 
-OP_VALUE : 'a';
+OP_VALUE : 'v';
 
 OP_SIGNAL : '-';
 
@@ -114,6 +106,8 @@ OP_SUM : '+' | '-';
 OP_MULT : '*' | '/';
 
 OP_PERCENTAGE : '%';
+
+OP_SYMBOL: '\'';
 
 //*********************
 //*** CMD OPERATORS ***
@@ -136,3 +130,9 @@ OP_PUSH : 'PUSH' | 'SAVE' | 'REMEMBER';
 OP_POP : 'POP' | 'LOAD' | 'GOBACK' ;
 
 OP_FORGET : 'FORGET' | 'POPNOMOVE';
+
+//************
+//*** ELSE ***
+//************
+
+OTHER_CHAR : .;
