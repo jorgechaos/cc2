@@ -1,14 +1,14 @@
 import processing.awt.PSurfaceAWT.SmoothCanvas;
 import processing.core.*;
 
-public class DrawingPanel extends PApplet {
+public class DrawingPanelController extends PApplet {
 	
 	private SmoothCanvas smoothCanvas;
 	private PSurface ps;
 	
 	private int Width, Height;
 	
-	public DrawingPanel(int w, int h){
+	public DrawingPanelController(int w, int h){
 		Width = w;
 		Height = h;
 		
@@ -39,8 +39,10 @@ public class DrawingPanel extends PApplet {
 	public void draw() {
 		background(255);
 		fill(0);
-		text("Geração " + MainWindow.selection, 5, 20);
+		text("Geração " + MainWindowController.selection, width-100, 20);
+		text(MainWindowController.message, 5, 20);
+		
 		fill(55,255,255);
-		ellipse(Width/2,Height/2,10*MainWindow.selection+1,10*MainWindow.selection+1);
+		ellipse(Width/2,Height/2,10*MainWindowController.selection+1,10*MainWindowController.selection+1);
 	}
 }
