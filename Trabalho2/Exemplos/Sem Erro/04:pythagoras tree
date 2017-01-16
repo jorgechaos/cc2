@@ -1,8 +1,8 @@
 // https://en.wikipedia.org/wiki/L-system#Example_2:_Pythagoras_tree
 
-alphabet: 0 : FORWARD, 1 : FORWARD, [ : PUSH, + : LEFT(45), ] : POP, - : RIGHT(45)
+alphabet: '0' : FORWARD, '1' : FORWARD, '[' : PUSH, '+' : LEFT(45), ']' : POP, '-' : RIGHT(45)
 
-axiom: 0
+axiom: '0'
 
-rules: 1 -> 11
-       0 -> 1[+0]-0
+rules: '1' -> '1' '1',
+       '0' -> '1'  '[' '+' '0' ']'  '-' '0'

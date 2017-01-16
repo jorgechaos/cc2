@@ -1,15 +1,15 @@
 // Lindenmayer's original L-system for modelling the growth of algae.
 // If we count the length of each string, we obtain the famous Fibonacci Sequence of numbers
 // 1 2 3 5 8 13 21 34 55 89...
-alphabet: A, B
-axiom: A
-rules: A -> AB,
-       B -> A
+alphabet: 'A', 'B'
+axiom: 'A'
+rules: 'A' -> 'A' 'B',
+       'B' -> 'A'
 
-// A				1,  n=0
-// AB				2,  n=1
-// ABA				3,  n=2
-// ABAAB			5,  n=3
-// ABAABABA			8,  n=4
-// ABAABABAABAAB		13, n=5
+// A						1,  n=0
+// AB						2,  n=1
+// ABA						3,  n=2
+// ABAAB					5,  n=3
+// ABAABABA					8,  n=4
+// ABAABABAABAAB			13, n=5
 // ABAABABAABAABABAABABA	21, n=6
