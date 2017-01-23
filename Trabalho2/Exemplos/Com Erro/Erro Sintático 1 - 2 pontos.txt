@@ -1,0 +1,4 @@
+alphabet 'A':PUSH, 'B':POP
+axiom: 'A'
+rules: 'A'-> 'A''B',
+       'B'-> 'B''A'
