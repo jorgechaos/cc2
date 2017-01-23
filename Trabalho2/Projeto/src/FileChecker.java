@@ -1,3 +1,5 @@
+package trabalho2;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,9 +19,6 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.Interval;
-
-import LSystemDescriptorLexer;
-import LSystemDescriptorParser;
 
 /** Dependencies:
  * antlr
@@ -128,6 +127,8 @@ public abstract class FileChecker {
 			}
 		});
 		
+                parser.addParseListener(new LSystemDescriptorSemantics());
+                
 		parser.description();
 		if(ok){
 			message += "Ok" + "\n";
