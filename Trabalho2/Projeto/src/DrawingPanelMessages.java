@@ -1,6 +1,3 @@
-package model;
-
-import controller.MainWindowController;
 import processing.core.PApplet;
 
 public class DrawingPanelMessages extends PApplet {
