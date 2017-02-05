@@ -19,8 +19,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import javax.swing.JSlider;
 
 @SuppressWarnings("serial")
 public class MainWindowController extends JFrame {
@@ -36,6 +40,7 @@ public class MainWindowController extends JFrame {
 	public static int selection = 0;
 	public static File descriptor;
 	public static String message = "Open a file to start";
+	public static int zoom = 1;
 
 	/**
 	 * creates the frame
@@ -174,6 +179,8 @@ public class MainWindowController extends JFrame {
 						mntmCloseFile.setEnabled(true);
 						message = descriptor.getAbsolutePath() + "\n" + "is currently open";
 						
+						//TODO Clean generations; Add the drawing logic to the drawPanel turtle.
+		
 						iterationList.clearSelection();
 						listModel.clear();
 						selection = 0;
@@ -200,6 +207,26 @@ public class MainWindowController extends JFrame {
 		mnOptions.add(mntmCloseFile);	
 		mnOptions.addSeparator();
 		mnOptions.add(mntmExit);
+		
+		JSlider sliderZoom = new JSlider();
+		sliderZoom.setMinorTickSpacing(1);
+		sliderZoom.setMaximum(10);
+		sliderZoom.setMinimum(1);
+		sliderZoom.setValue(1);
+		sliderZoom.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				zoom = sliderZoom.getValue();
+				drawPanel.loop();
+				
+			}
+		});
+		
+		JMenu mnZoom = new JMenu("Zoom");
+		menuBar.add(mnZoom);
+		
+		mnZoom.add(sliderZoom);
 	}
 	
 	public static Rectangle getDefaultScreenSize() {

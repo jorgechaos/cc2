@@ -4,6 +4,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import LSystemDescriptorParser.AlphabetContext;
+import LSystemDescriptorParser.DescriptionContext;
+import LSystemDescriptorParser.SingleRuleContext;
+import LSystemDescriptorParser.SymbolWithCommandContext;
+
 public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 	HashMap<Character, TurtleCommands> hm = new HashMap<>();
 	AlphabetTable tabelaDeSimbolos = new AlphabetTable(hm);

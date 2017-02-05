@@ -23,7 +23,7 @@ public class Turtle extends PApplet {
 	public void turtle() {
 		p.translate(p.width/2, p.height);
 		p.stroke(0);
-		p.strokeWeight(2);
+		p.strokeWeight(2/MainWindowController.zoom);
 		for (int i=0; i < getSentence().length(); i++) {
 			Character current = getSentence().charAt(i);
 
@@ -38,12 +38,12 @@ public class Turtle extends PApplet {
 					break;
 					
 				case FORWARD:
-					p.line(0, 0, 0, -len);
-					p.translate(0, -len);
+					p.line(0, 0, 0, (-len)/MainWindowController.zoom);
+					p.translate(0, (-len)/MainWindowController.zoom);
 					break;
 					
 				case FORWARD_NODRAW:
-					p.translate(0, -len);
+					p.translate(0, (-len)/MainWindowController.zoom);
 					break;
 					
 				case POP:

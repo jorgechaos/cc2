@@ -1,13 +1,20 @@
-import java.util.HashMap;
-
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import LSystemDescriptorParser.AlphabetContext;
+import LSystemDescriptorParser.AngleContext;
+import LSystemDescriptorParser.AxiomContext;
+import LSystemDescriptorParser.CommandContext;
+import LSystemDescriptorParser.DescriptionContext;
+import LSystemDescriptorParser.RulesContext;
+import LSystemDescriptorParser.SettingsContext;
+import LSystemDescriptorParser.SingleRuleContext;
+import LSystemDescriptorParser.SizeContext;
+import LSystemDescriptorParser.SymbolWithCommandContext;
 
 public class LSMakerLSystemDescriptorVisitor extends LSystemDescriptorBaseVisitor<Object> {
 	LSystem ls;
 	AlphabetTable at;
 	
-	@SuppressWarnings("unchecked")
 	public LSystem visitDescription(DescriptionContext ctx) {
 		this.ls = new LSystem();
 		
