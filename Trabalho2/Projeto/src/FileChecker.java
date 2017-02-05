@@ -1,5 +1,3 @@
-package trabalho2;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,56 +26,30 @@ import org.antlr.v4.runtime.misc.Interval;
 public abstract class FileChecker {
 	static boolean ok;
 	static String message;
+	
 	public static boolean check(File f){
 		ok = true;
 		message = "";
-		InputStream is;
 		
-		try {
-			is = new FileInputStream(f);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.out.println("FNF exc");
-			return false;
-		}
-		
-		ANTLRInputStream antlris;
-		
-		try {
-			antlris = new ANTLRInputStream(is);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("IO exc");
-			try {
-				is.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				System.out.println("IO exc in IO exc");
-			}
-			return false;
-		}
-		
-		LSystemDescriptorLexer lexer = new LSystemDescriptorLexer(antlris);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		LSystemDescriptorParser parser = new LSystemDescriptorParser(tokens);
-		
+		LSystemDescriptorParser parser = makeParser(f);
+
 		parser.removeErrorListeners();
-		
+
 		parser.addErrorListener(new ANTLRErrorListener() {	
 
 			@Override
 			public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionLine, String msg, RecognitionException e) {
-				
-				
+
+
 				CommonToken os = (CommonToken)offendingSymbol;
 				if(e != null)
 					message += e + "\n";
 				message += "Syntax error:" + "\n";
-				
+
 				message += "Lin:Pos    " + line + ":" + charPositionLine + "\n";
 				message += "Token:     \"" + os.getText() + "\"" + "\n";
 				message += "Type:      " + os.getType() + ":" + recognizer.getVocabulary().getSymbolicName(os.getType()) + "\n";
-				
+
 				String expected = "", expectedNmbrs = "";
 				if(e != null && e.getExpectedTokens() != null && e.getExpectedTokens().getIntervals() != null)
 					for(Interval intv : e.getExpectedTokens().getIntervals()){
@@ -90,7 +62,7 @@ public abstract class FileChecker {
 					expectedNmbrs = expectedNmbrs.substring(0, expectedNmbrs.lastIndexOf(","));
 				if(!expected.equals(""))
 					expected = expected.substring(0, expected.lastIndexOf(","));
-				
+
 				if(e!=null)
 					message += "Expected:  " + expectedNmbrs + ":" + expected + "\n";
 				else{
@@ -99,26 +71,26 @@ public abstract class FileChecker {
 					else
 						message += "Invalid Character" + "\n";
 				}
-					
-				
+
+
 				ok = false;
 				message += "\n";
 			}
-			
+
 			@Override
 			public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, int i2, ATNConfigSet atncs) {
 				message += "Context Sensitivity Report" + "\n";
 				ok = false;
 				message += "\n";
 			}
-			
+
 			@Override
 			public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, BitSet bitset, ATNConfigSet atncs) {
 				message += "Attempting Full Context Report" + "\n";
 				ok = false;
 				message += "\n";
 			}
-			
+
 			@Override
 			public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, boolean bln, BitSet bitset, ATNConfigSet atncs) {
 				message += "Ambiguity Report" + "\n";
@@ -126,16 +98,65 @@ public abstract class FileChecker {
 				message += "\n";
 			}
 		});
-		
-                parser.addParseListener(new LSystemDescriptorSemantics());
-                
+
+		parser.addParseListener(new LSystemDescriptorSemantics());
+
 		parser.description();
+		
 		if(ok){
 			message += "Ok" + "\n";
 			message += "\n";
 		}
-		
+
 		JOptionPane.showMessageDialog(MainWindowController.getMainFrame(), message);
 		return ok;
+	}
+	
+	public static LSystem makeLSystem(File f) {
+		LSystem ls;
+		
+		LSystemDescriptorParser parser = makeParser(f);
+		
+		parser.removeErrorListeners();
+		parser.removeParseListeners();
+		
+		LSMakerLSystemDescriptorVisitor lsmaker = new LSMakerLSystemDescriptorVisitor();
+		ls = (LSystem)lsmaker.visit(parser.description());
+
+		return ls;
+	}
+	
+	private static LSystemDescriptorParser makeParser(File f) {
+		InputStream is;
+
+		try {
+			is = new FileInputStream(f);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("FNF exc");
+			return null;
+		}
+
+		ANTLRInputStream antlris;
+
+		try {
+			antlris = new ANTLRInputStream(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("IO exc");
+			try {
+				is.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				System.out.println("IO exc in IO exc");
+			}
+			return null;
+		}
+
+		LSystemDescriptorLexer lexer = new LSystemDescriptorLexer(antlris);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		LSystemDescriptorParser parser = new LSystemDescriptorParser(tokens);
+		
+		return parser;
 	}
 }

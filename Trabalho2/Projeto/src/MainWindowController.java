@@ -22,8 +22,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-
-
 @SuppressWarnings("serial")
 public class MainWindowController extends JFrame {
 	
@@ -66,51 +64,6 @@ public class MainWindowController extends JFrame {
 		JMenu mnOptions = new JMenu("Options");
 		menuBar.add(mnOptions);
 		
-		JMenuItem mntmCloseFile = new JMenuItem("Close File...");
-		mntmCloseFile.addActionListener(new ActionListener() {
-			// Close File
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				message = "File " + descriptor.getName() + " closed";
-				if(descriptor != null)
-					descriptor = null;
-				mntmCloseFile.setEnabled(false);
-			}
-		});
-		mntmCloseFile.setEnabled(false);
-		
-		JMenuItem mntmOpenFile = new JMenuItem("Open File...");
-		mntmOpenFile.addActionListener(new ActionListener() {
-			// Open File
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int ret = fc.showOpenDialog(getMainFrame());
-				
-				if(ret == JFileChooser.APPROVE_OPTION){
-					descriptor = fc.getSelectedFile();
-					
-					if(FileChecker.check(descriptor)){
-						mntmCloseFile.setEnabled(true);
-						message = descriptor.getAbsolutePath() + "\n" + "is currently open";
-					}
-					else{
-						message = descriptor.getName() + " is an invalid archive";
-						descriptor = null;
-						
-					}
-				}
-				else{
-					message = ret + ": Open file operation failed";
-				}
-			}
-			
-			
-		});
-		mnOptions.add(mntmOpenFile);
-		mnOptions.add(mntmCloseFile);
-		
-		mnOptions.addSeparator();
-		
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			@Override
@@ -118,9 +71,6 @@ public class MainWindowController extends JFrame {
 				System.exit(0);
 			}
 		});
-		mnOptions.add(mntmExit);
-		
-
 		
 		JPanel drawingPanelContainer = new JPanel();
 		drawingPanelContainer.setLayout(null);
@@ -132,32 +82,6 @@ public class MainWindowController extends JFrame {
 		drawingPanelContainer.add(drawPanel.getSCanvas());
 		drawingPanelContainer.getComponent(0).setLocation(1, 1);
 		drawPanel.init();
-		
-//		//Remove Later
-//		
-//				drawPanel.getSCanvas().addMouseListener(new MouseListener() {
-//					
-//					@Override
-//					public void mouseClicked(MouseEvent e) {
-//						File f = new File("./Examples/01");
-//						FileChecker.check(f);
-//						
-//					}
-//
-//					@Override
-//					public void mousePressed(MouseEvent e) {}
-//
-//					@Override
-//					public void mouseReleased(MouseEvent e) {}
-//
-//					@Override
-//					public void mouseEntered(MouseEvent e) {}
-//
-//					@Override
-//					public void mouseExited(MouseEvent e) {}
-//				});
-//				
-//				//Remove Later
 		
 		contentPane.add(drawingPanelContainer);
 		
@@ -176,7 +100,14 @@ public class MainWindowController extends JFrame {
 		iterationList.setBackground(Color.WHITE);
 		iterationList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
+				Turtle t = drawPanel.getTurtle();
 				selection = iterationList.getSelectedIndex();
+				t.setSentence(t.getLSystem().getGeneration(selection));
+				
+				if(selection >= 0)
+					message = "This generation size is: " + t.getSentence().length();
+				
+				drawPanel.loop();
 			}
 		});
 		
@@ -187,20 +118,88 @@ public class MainWindowController extends JFrame {
 		btnGenerate.addActionListener(
 			new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					selection = listModel.getSize();
-					listModel.addElement("Geração " + listModel.getSize());
-					iterationList.setSelectedValue(listModel.getElementAt(listModel.getSize()-1), true);
+					if(btnGenerate.isEnabled()) {
+						Turtle t = drawPanel.getTurtle();
+						selection = listModel.getSize();
+						listModel.addElement("Geração " + listModel.getSize());
+						t.getLSystem().newGeneration();
+						iterationList.setSelectedValue(listModel.getElementAt(listModel.getSize()-1), true);
+						
+						drawPanel.loop();
+					}
 				}
 			});
+		btnGenerate.setEnabled(false);
 		writePanel.add(btnGenerate);
-		
-		
-		listModel.addElement("Geração 0");
 		
 		JScrollPane scroll = new JScrollPane(iterationList);
 		scroll.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		scroll.setBounds(elmntGap, elmntGap, writePanel.getWidth()-2*elmntGap, writePanel.getHeight()-btnGenerate.getHeight()-3*elmntGap);
 		writePanel.add(scroll);
+		
+		JMenuItem mntmCloseFile = new JMenuItem("Close File...");
+		mntmCloseFile.addActionListener(new ActionListener() {
+			// Close File
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				message = "File " + descriptor.getName() + " closed";
+				if(descriptor != null)
+					descriptor = null;
+				mntmCloseFile.setEnabled(false);
+
+				iterationList.clearSelection();
+				listModel.clear();
+				selection = 0;
+				
+				drawPanel.getTurtle().reset(new LSystem());
+				
+				btnGenerate.setEnabled(false);	
+				
+				drawPanel.loop();
+			}
+		});
+		mntmCloseFile.setEnabled(false);
+		
+		JMenuItem mntmOpenFile = new JMenuItem("Open File...");
+		mntmOpenFile.addActionListener(new ActionListener() {
+			// Open File
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int ret = fc.showOpenDialog(getMainFrame());
+				
+				if(ret == JFileChooser.APPROVE_OPTION){
+					descriptor = fc.getSelectedFile();
+					
+					if(FileChecker.check(descriptor)){
+						mntmCloseFile.setEnabled(true);
+						message = descriptor.getAbsolutePath() + "\n" + "is currently open";
+						
+						iterationList.clearSelection();
+						listModel.clear();
+						selection = 0;
+						listModel.addElement("Geração 0");
+						
+						drawPanel.getTurtle().reset(FileChecker.makeLSystem(descriptor));
+						
+						btnGenerate.setEnabled(true);	
+					}
+					else{
+						message = descriptor.getName() + " is an invalid archive";
+						descriptor = null;
+					}
+				}
+				else{
+					message = ret + ": Open file operation failed";
+				}
+				
+				drawPanel.loop();
+			}
+		});	
+		
+		mnOptions.add(mntmOpenFile);
+		mnOptions.add(mntmCloseFile);	
+		mnOptions.addSeparator();
+		mnOptions.add(mntmExit);
 	}
 	
 	public static Rectangle getDefaultScreenSize() {
@@ -219,4 +218,3 @@ public class MainWindowController extends JFrame {
 		MainWindowController.mainFrame = mainFrame;
 	}
 }
-

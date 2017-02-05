@@ -1,7 +1,5 @@
 import java.awt.EventQueue;
 
-import controller.MainWindowController;
-
 public class Main {
 	/**
 	 * launches the application
