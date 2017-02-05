@@ -1,0 +1,9 @@
+// https://en.wikipedia.org/wiki/L-system#Example_2:_Pythagoras_tree
+
+alphabet: '0' : FORWARD, '1' : FORWARD, '[' : PUSH, '+' : LEFT, ']' : POP, '-' : RIGHT
+
+axiom: '0'
+
+rules: '1' -> '1' '1',
+       '0' -> '1'  '[' '+' '0' ']'  '-' '0'
+angle: 45
