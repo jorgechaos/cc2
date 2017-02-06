@@ -1,0 +1,4 @@
+alphabet: 'A', 'B', 'A'
+axiom: 'A'
+rules: 'A' -> 'A' 'B',
+       'B' -> 'A'
