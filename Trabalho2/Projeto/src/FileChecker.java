@@ -1,3 +1,4 @@
+package trabalho2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,10 +27,12 @@ import org.antlr.v4.runtime.misc.Interval;
 public abstract class FileChecker {
 	static boolean ok;
 	static String message;
+        static boolean erroSintatico = false;
 	
 	public static boolean check(File f){
 		ok = true;
 		message = "";
+                erroSintatico = false;
 		
 		LSystemDescriptorParser parser = makeParser(f);
 
@@ -74,6 +77,7 @@ public abstract class FileChecker {
 
 
 				ok = false;
+                                erroSintatico = true;
 				message += "\n";
 			}
 
@@ -81,6 +85,7 @@ public abstract class FileChecker {
 			public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, int i2, ATNConfigSet atncs) {
 				message += "Context Sensitivity Report" + "\n";
 				ok = false;
+                                erroSintatico = true;
 				message += "\n";
 			}
 
@@ -88,6 +93,7 @@ public abstract class FileChecker {
 			public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, BitSet bitset, ATNConfigSet atncs) {
 				message += "Attempting Full Context Report" + "\n";
 				ok = false;
+                                erroSintatico = true;
 				message += "\n";
 			}
 
@@ -95,6 +101,7 @@ public abstract class FileChecker {
 			public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, boolean bln, BitSet bitset, ATNConfigSet atncs) {
 				message += "Ambiguity Report" + "\n";
 				ok = false;
+                                erroSintatico = true;
 				message += "\n";
 			}
 		});
@@ -103,10 +110,17 @@ public abstract class FileChecker {
 
 		parser.description();
 		
-		if(ok){
+		if(ok && LSystemDescriptorSemantics.erroSemantico == false ){
 			message += "Ok" + "\n";
 			message += "\n";
-		}
+		} else if(erroSintatico == false) {
+                    //Erro Semantico
+                    message += LSystemDescriptorSemantics.message + "\n";
+                    message += "\n";
+                    JOptionPane.showMessageDialog(MainWindowController.getMainFrame(), message);
+                    return false;
+                    
+                }
 
 		JOptionPane.showMessageDialog(MainWindowController.getMainFrame(), message);
 		return ok;

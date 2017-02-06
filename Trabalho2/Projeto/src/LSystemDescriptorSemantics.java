@@ -1,18 +1,22 @@
+package trabalho2;
+
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import LSystemDescriptorParser.AlphabetContext;
-import LSystemDescriptorParser.DescriptionContext;
-import LSystemDescriptorParser.SingleRuleContext;
-import LSystemDescriptorParser.SymbolWithCommandContext;
+import trabalho2.LSystemDescriptorParser.AlphabetContext;
+import trabalho2.LSystemDescriptorParser.DescriptionContext;
+import trabalho2.LSystemDescriptorParser.SingleRuleContext;
+import trabalho2.LSystemDescriptorParser.SymbolWithCommandContext;
 
 public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 	HashMap<Character, TurtleCommands> hm = new HashMap<>();
 	AlphabetTable tabelaDeSimbolos = new AlphabetTable(hm);
-
+        public static boolean  erroSemantico = false;
+        public static String message;
+        
 	public void enterAlphabet(AlphabetContext ctx){
 
 	}
@@ -28,7 +32,10 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 						//System.out.println(alphabetSymbol);
 						if(tabelaDeSimbolos.hasKey(alphabetSymbol)){
 							//Erro Semantico De Simbolo ja declarado
-							System.out.println("Simbolo já Declarado!");
+                                                        erroSemantico = true;
+							//System.out.println("Simbolo já Declarado!");
+                                                        message = "Erro Semantico no Alfabeto! " + "\n";
+                                                        message += "Simbolo: " + alphabetSymbol + " já declarado.";
 							//System.out.println(tabelaDeSimbolos.getAlphabetSymbols());
 						} else {
 							//Verifica se o simbolo possui um comando
@@ -36,42 +43,42 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 								
 								if (swcCtx.command().OP_FORWARD() != null && !swcCtx.command().OP_FORWARD().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.FORWARD);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_FORWARD_NODRAW() != null && !swcCtx.command().OP_FORWARD_NODRAW().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_FORWARD_NODRAW() != null && !swcCtx.command().OP_FORWARD_NODRAW().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.FORWARD_NODRAW);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_ROTATE_CCW() != null && !swcCtx.command().OP_ROTATE_CCW().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_ROTATE_CCW() != null && !swcCtx.command().OP_ROTATE_CCW().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.ROTATE_CCW);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_ROTATE_CW() != null && !swcCtx.command().OP_ROTATE_CW().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_ROTATE_CW() != null && !swcCtx.command().OP_ROTATE_CW().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.ROTATE_CW);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_RESET() != null && !swcCtx.command().OP_RESET().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_RESET() != null && !swcCtx.command().OP_RESET().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.RESET);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_PUSH() != null && !swcCtx.command().OP_PUSH().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_PUSH() != null && !swcCtx.command().OP_PUSH().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.PUSH);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_POP() != null && !swcCtx.command().OP_POP().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_POP() != null && !swcCtx.command().OP_POP().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.POP);
-									break;
+									
 								}
 								
-								if (swcCtx.command().OP_FORGET() != null && !swcCtx.command().OP_FORGET().getText().isEmpty()) {
+                                                                else if (swcCtx.command().OP_FORGET() != null && !swcCtx.command().OP_FORGET().getText().isEmpty()) {
 									hm.put(alphabetSymbol, TurtleCommands.FORGET);
-									break;
+									
 								}
 							}
 							else
@@ -79,6 +86,7 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 						}
 						//Adiciona simbolo e comando na tabela
 						tabelaDeSimbolos.setAlphabetSymbols(hm);
+                                                //System.out.println(tabelaDeSimbolos.getAlphabetSymbols());
 					}
 				}
 			}
@@ -118,7 +126,10 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 				//Verifica se o simbolo foi declarado
 				if(!tabelaDeSimbolos.hasKey(alphabetSymbol)){
 					//Erro Semantico de simbolo nao declado
-					System.out.println(alphabetSymbol + " Axioma Não Declarado");
+                                        erroSemantico = true;
+					//System.out.println(alphabetSymbol + " Axioma Não Declarado");
+                                        message = "Erro Semantico no Axioma! " + "\n";
+                                        message += "Simbolo: " + alphabetSymbol + " não faz parte do  alfabeto ";
 				}
 			}
 		}
@@ -134,11 +145,14 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 			for(SingleRuleContext rule : ctx.singleRule()){
 				if(rule.ALPHABET_SYMBOL() != null && !rule.ALPHABET_SYMBOL().isEmpty()){
 					alphabetSymbol = rule.ALPHABET_SYMBOL().get(0).getText().charAt(1);
-					//System.out.println(alphabetSymbol);
+					System.out.println(tabelaDeSimbolos.getAlphabetSymbols());
 					//Verificar se os simbolos foram declarados no alfabeto
 					if(!tabelaDeSimbolos.hasKey(alphabetSymbol)){
 						//Erro semantico de simbolo nao declarado
 						//System.out.println(alphabetSymbol + " Regra Não Declarado");
+                                                erroSemantico = true;
+                                                message = "Erro Semantico nas Regras! " + "\n";
+                                                message += "Simbolo: " + alphabetSymbol + " não faz parte do alfabeto ";
 					}
 				}
 			}
