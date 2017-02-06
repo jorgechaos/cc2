@@ -32,7 +32,8 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 						//System.out.println(alphabetSymbol);
 						if(tabelaDeSimbolos.hasKey(alphabetSymbol)){
 							//Erro Semantico De Simbolo ja declarado
-                                                        erroSemantico = true;
+                                                        //erroSemantico = true;
+                                                        FileChecker.ok = false;
 							//System.out.println("Simbolo já Declarado!");
                                                         message = "Erro Semantico no Alfabeto! " + "\n";
                                                         message += "Simbolo: " + alphabetSymbol + " já declarado.";
@@ -126,7 +127,8 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 				//Verifica se o simbolo foi declarado
 				if(!tabelaDeSimbolos.hasKey(alphabetSymbol)){
 					//Erro Semantico de simbolo nao declado
-                                        erroSemantico = true;
+                                        //erroSemantico = true;
+                                        FileChecker.ok = false;
 					//System.out.println(alphabetSymbol + " Axioma Não Declarado");
                                         message = "Erro Semantico no Axioma! " + "\n";
                                         message += "Simbolo: " + alphabetSymbol + " não faz parte do  alfabeto ";
@@ -145,12 +147,13 @@ public class LSystemDescriptorSemantics extends LSystemDescriptorBaseListener {
 			for(SingleRuleContext rule : ctx.singleRule()){
 				if(rule.ALPHABET_SYMBOL() != null && !rule.ALPHABET_SYMBOL().isEmpty()){
 					alphabetSymbol = rule.ALPHABET_SYMBOL().get(0).getText().charAt(1);
-					System.out.println(tabelaDeSimbolos.getAlphabetSymbols());
+					//System.out.println(tabelaDeSimbolos.getAlphabetSymbols());
 					//Verificar se os simbolos foram declarados no alfabeto
 					if(!tabelaDeSimbolos.hasKey(alphabetSymbol)){
 						//Erro semantico de simbolo nao declarado
 						//System.out.println(alphabetSymbol + " Regra Não Declarado");
-                                                erroSemantico = true;
+                                                //erroSemantico = true;
+                                                FileChecker.ok = false;
                                                 message = "Erro Semantico nas Regras! " + "\n";
                                                 message += "Simbolo: " + alphabetSymbol + " não faz parte do alfabeto ";
 					}

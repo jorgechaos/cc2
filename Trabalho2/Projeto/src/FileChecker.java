@@ -33,7 +33,7 @@ public abstract class FileChecker {
 		ok = true;
 		message = "";
                 erroSintatico = false;
-		
+                
 		LSystemDescriptorParser parser = makeParser(f);
 
 		parser.removeErrorListeners();
